@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: air_jet
+
+  jackson:
+    default-property-inclusion: non_null
+
+  profiles:
+    active: default,secrets
+
+  #  // test DB (DB ?? ? ?? ?? ??)
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+  #  datasource:
+  #    url: jdbc:postgresql://localhost:5432/mountain
+  #    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    #    database: postgresql
+    database: h2
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+#jwt:
+#  secret: ${JWT.SECRET}
+
+server:
+  port: 7757
