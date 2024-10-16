@@ -1,6 +1,6 @@
 spring:
   application:
-    name: air_jet
+    name: High-Mountain
 
   jackson:
     default-property-inclusion: non_null
@@ -36,4 +36,4 @@ spring:
 #  secret: ${JWT.SECRET}
 
 server:
-  port: 7757
+  port: 8081

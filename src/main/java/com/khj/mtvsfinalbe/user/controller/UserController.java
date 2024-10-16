@@ -35,7 +35,7 @@ public class UserController {
             );
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(ApiUtils.success("사용자의 이름 또는 비밀번호가 잘못되었습니다."), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(ApiUtils.error("사용자의 이름 또는 비밀번호가 잘못되었습니다."), HttpStatus.UNAUTHORIZED);
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(dto.loginId());
         String jwtToken = jwtUtil.generateToken(userDetails.getUsername());
@@ -50,10 +50,10 @@ public class UserController {
             userService.save(dto);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(ApiUtils.success(e.getMessage()), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(ApiUtils.error(e.getMessage()), HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(ApiUtils.success(e.getMessage()), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(ApiUtils.error(e.getMessage()), HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>(ApiUtils.success("회원가입이 완료되었습니다."), HttpStatus.OK);
     }

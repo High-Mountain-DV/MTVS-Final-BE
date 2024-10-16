@@ -1,6 +1,5 @@
 package com.khj.mtvsfinalbe._core.config;
 
-
 import com.khj.mtvsfinalbe._core.filter.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
