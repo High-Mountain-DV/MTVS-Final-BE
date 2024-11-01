@@ -18,22 +18,15 @@ spring:
 #    console:
 #      enabled: true
 
-    datasource:
-      url: jdbc:postgresql://localhost:5432/mountain
-      driver-class-name: org.postgresql.Driver
 
   jpa:
     show-sql: true
-    #    database: postgresql
-    database: h2
+    database: postgresql
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-
-#jwt:
-#  secret: ${JWT.SECRET}
 
 server:
   port: 8091
