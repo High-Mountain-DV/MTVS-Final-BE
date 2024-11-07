@@ -1,11 +1,11 @@
 package com.khj.mtvsfinalbe.combat.domain;
 
+import com.khj.mtvsfinalbe.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,27 +14,34 @@ import java.time.LocalDateTime;
 @Table(name = "tbl_combat")
 public class Combat {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // 전투 기록의 고유 ID
 
-    private String created_at;
-    private String damage_dealt;
-    private int assists;
-    private int play_time;
-    private int score;
-    private int accuracy;
-    private LocalDateTime last_updated;
-    private String nickname;
-    private boolean awareness;
-    private int ally_injuries;
-    private int ally_deaths;
-    private int kills;
+    private LocalDateTime created_at;   // 전투 세션이 생성된 날짜 및 시간
+    private double damage_dealt;        // 전투에서 적에게 가한 총 피해량
+    private int assists;                // 어시스트 횟수
+    private int play_time;              // 전투에 참여한 총 시간 (초 단위로 저장 가능)
+    private int score;                  // 전투 결과에 따른 종합 점수
+    private double accuracy;            // 명중률
+    private LocalDateTime last_updated; // 마지막으로 데이터가 업데이트된 시간
+    private String nickname;            // 사용자 닉네임
+    private double awareness;           // 상황 인지도
+    private int ally_injuries;          // 전투 중 아군 부상자 수
+    private int ally_deaths;            // 전투 중 아군 사망자 수
+    private int kills;                  // 적군을 사살한 횟수
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private User member; // User와의 다대일 관계
 
-    private Long memberId;
+    @Column(name = "member_id")
+    private Long memberId; // User ID
 
     @Builder
-    public Combat(String created_at, String damage_dealt, int assists, int play_time, int score, int accuracy, LocalDateTime last_updated, String nickname, boolean awareness, int ally_injuries, int ally_deaths, int kills, Long memberId) {
+    public Combat(LocalDateTime created_at, double damage_dealt, int assists, int play_time, int score, double accuracy,
+                  LocalDateTime last_updated, String nickname, double awareness, int ally_injuries, int ally_deaths,
+                  int kills, Long memberId) {
         this.created_at = created_at;
         this.damage_dealt = damage_dealt;
         this.assists = assists;

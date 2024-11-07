@@ -1,6 +1,7 @@
 package com.khj.mtvsfinalbe.combat.controller;
 
-import com.khj.mtvsfinalbe.combat.domain.Combat;
+import com.khj.mtvsfinalbe.combat.dto.CombatRequestDTO;
+import com.khj.mtvsfinalbe.combat.dto.CombatResponseDTO;
 import com.khj.mtvsfinalbe.combat.service.CombatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,30 +26,22 @@ public class CombatController {
 
     @PostMapping
     @Operation(summary = "Combat 데이터 생성", description = "새로운 Combat 데이터를 생성합니다.")
-    public ResponseEntity<Combat> saveCombat(@RequestBody Combat combat) {
-        Combat savedCombat = combatService.saveCombat(combat);
+    public ResponseEntity<CombatResponseDTO> saveCombat(@RequestBody CombatRequestDTO requestDto) {
+        CombatResponseDTO savedCombat = combatService.saveCombat(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCombat);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "특정 Combat 데이터 조회", description = "ID를 통해 특정 Combat 데이터를 조회합니다.")
-    public ResponseEntity<Combat> getCombatById(@PathVariable Long id) {
-        return combatService.getCombatById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<CombatResponseDTO> getCombatById(@PathVariable Long id) {
+        CombatResponseDTO combat = combatService.getCombatById(id);
+        return combat != null ? ResponseEntity.ok(combat) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("/user/{memberId}")
     @Operation(summary = "특정 사용자 전투 세션 조회", description = "특정 사용자의 모든 전투 세션 데이터를 조회합니다.")
-    public ResponseEntity<List<Combat>> getCombatsByMemberId(@PathVariable Long memberId) {
-        List<Combat> combats = combatService.getCombatsByMemberId(memberId);
+    public ResponseEntity<List<CombatResponseDTO>> getCombatsByMemberId(@PathVariable Long memberId) {
+        List<CombatResponseDTO> combats = combatService.getCombatsByMemberId(memberId);
         return ResponseEntity.ok(combats);
-    }
-
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Combat 데이터 삭제", description = "ID를 통해 특정 Combat 데이터를 삭제합니다.")
-    public ResponseEntity<Void> deleteCombat(@PathVariable Long id) {
-        combatService.deleteCombat(id);
-        return ResponseEntity.noContent().build();
     }
 }
