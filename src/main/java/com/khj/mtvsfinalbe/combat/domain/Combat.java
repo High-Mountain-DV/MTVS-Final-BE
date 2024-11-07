@@ -29,10 +29,12 @@ public class Combat {
     private int ally_injuries;
     private int ally_deaths;
     private int kills;
-    private Long member_id;
+
+
+    private Long memberId;
 
     @Builder
-    public Combat(String created_at, String damage_dealt, int assists, int play_time, int score, int accuracy, LocalDateTime last_updated, String nickname, boolean awareness, int ally_injuries, int ally_deaths, int kills, Long member_id) {
+    public Combat(String created_at, String damage_dealt, int assists, int play_time, int score, int accuracy, LocalDateTime last_updated, String nickname, boolean awareness, int ally_injuries, int ally_deaths, int kills, Long memberId) {
         this.created_at = created_at;
         this.damage_dealt = damage_dealt;
         this.assists = assists;
@@ -45,6 +47,6 @@ public class Combat {
         this.ally_injuries = ally_injuries;
         this.ally_deaths = ally_deaths;
         this.kills = kills;
-        this.member_id = member_id;
+        this.memberId = memberId;
     }
 }
