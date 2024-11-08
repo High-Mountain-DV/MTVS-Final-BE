@@ -1,26 +1,36 @@
 package com.khj.mtvsfinalbe._core.utils;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 public class ApiUtils {
 
     public static <T> ApiResult<T> success(T response) {
-        return new ApiResult<>(true, response);
+        return new ApiResult<>(true, response, null);
     }
-    public static <T> ApiResult<T> error(T response) {
-        return new ApiResult<>(false, response);
+
+    public static ApiResult<?> error(String message, HttpStatus status) {
+        return new ApiResult<>(false, null, new ApiError(message, status.value()));
+    }
+
+    public static <T> ApiResult<T> error(T data) {
+        return new ApiResult<>(false, null, data);
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private static class ApiResult<T> {
+    public static class ApiResult<T> {
         private final boolean success;
         private final T response;
+        private final T error;
     }
 
+    @Getter @Setter @AllArgsConstructor
+    public static class ApiError {
+        private final String message;
+        private final int status;
+    }
 }

@@ -31,10 +31,6 @@ public class Combat {
     private int ally_deaths;            // 전투 중 아군 사망자 수
     private int kills;                  // 적군을 사살한 횟수
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private User member; // User와의 다대일 관계
-
     @Column(name = "member_id")
     private Long memberId; // User ID
 

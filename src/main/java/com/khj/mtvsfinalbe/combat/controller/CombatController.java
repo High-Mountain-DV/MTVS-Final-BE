@@ -1,6 +1,6 @@
 package com.khj.mtvsfinalbe.combat.controller;
 
-import com.khj.mtvsfinalbe.combat.dto.CombatRequestDTO;
+import com.khj.mtvsfinalbe.combat.domain.dto.CombatRequestDTO;
 import com.khj.mtvsfinalbe.combat.dto.CombatResponseDTO;
 import com.khj.mtvsfinalbe.combat.service.CombatService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.khj.mtvsfinalbe._core.utils.SecurityUtils.getCurrentUserId;
 
 @RestController
 @RequestMapping("/api/combat")
@@ -27,7 +29,8 @@ public class CombatController {
     @PostMapping
     @Operation(summary = "Combat 데이터 생성", description = "새로운 Combat 데이터를 생성합니다.")
     public ResponseEntity<CombatResponseDTO> saveCombat(@RequestBody CombatRequestDTO requestDto) {
-        CombatResponseDTO savedCombat = combatService.saveCombat(requestDto);
+        Long memberId = getCurrentUserId();
+        CombatResponseDTO savedCombat = combatService.saveCombat(memberId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCombat);
     }
 

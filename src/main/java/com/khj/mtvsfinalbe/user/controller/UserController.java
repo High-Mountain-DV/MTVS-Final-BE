@@ -2,7 +2,10 @@ package com.khj.mtvsfinalbe.user.controller;
 
 import com.khj.mtvsfinalbe._core.utils.ApiUtils;
 import com.khj.mtvsfinalbe._core.utils.JwtUtil;
+import com.khj.mtvsfinalbe.user.domain.User;
 import com.khj.mtvsfinalbe.user.domain.dto.UserRequestDTO;
+import com.khj.mtvsfinalbe.user.domain.dto.UserResponseDTO;
+import com.khj.mtvsfinalbe.user.repository.UserRepository;
 import com.khj.mtvsfinalbe.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -26,22 +29,33 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody UserRequestDTO.loginDTO dto){
+        User user = userRepository.findByLoginId(dto.loginId());
+
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(dto.loginId(), dto.password())
+                    new UsernamePasswordAuthenticationToken(user.getId(), dto.password())
             );
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(ApiUtils.error("사용자의 이름 또는 비밀번호가 잘못되었습니다."), HttpStatus.UNAUTHORIZED);
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(dto.loginId());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(user.getId()));
         String jwtToken = jwtUtil.generateToken(userDetails.getUsername());
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + jwtToken);
-        return new ResponseEntity<>(ApiUtils.success("로그인이 완료되었습니다."), headers, HttpStatus.OK);
+
+        new UserResponseDTO(user.getId(), user.getNickname());
+
+        return new ResponseEntity<>(
+                ApiUtils.success("로그인이 완료되었습니다.")
+                , headers
+                , HttpStatus.OK
+        );
     }
 
     @PostMapping("/signup")
