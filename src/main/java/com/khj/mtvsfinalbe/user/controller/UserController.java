@@ -49,10 +49,10 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + jwtToken);
 
-        new UserResponseDTO(user.getId(), user.getNickname());
+        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(), user.getNickname(), user.getLoginId());
 
         return new ResponseEntity<>(
-                ApiUtils.success("로그인이 완료되었습니다.")
+                ApiUtils.success(userResponseDTO)
                 , headers
                 , HttpStatus.OK
         );

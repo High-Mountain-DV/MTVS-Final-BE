@@ -11,4 +11,5 @@ public class UserResponseDTO {
 
     private Long id;
     private String nickname;
+    private String loginId;
 }
