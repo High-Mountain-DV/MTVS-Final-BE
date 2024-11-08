@@ -1,7 +1,7 @@
 package com.khj.mtvsfinalbe.combat.controller;
 
 import com.khj.mtvsfinalbe.combat.domain.dto.CombatRequestDTO;
-import com.khj.mtvsfinalbe.combat.dto.CombatResponseDTO;
+import com.khj.mtvsfinalbe.combat.domain.dto.CombatResponseDTO;
 import com.khj.mtvsfinalbe.combat.service.CombatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
