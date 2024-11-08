@@ -1,7 +1,7 @@
 package com.khj.mtvsfinalbe.combat.service;
 
 import com.khj.mtvsfinalbe.combat.domain.Combat;
-import com.khj.mtvsfinalbe.combat.dto.CombatRequestDTO;
+import com.khj.mtvsfinalbe.combat.domain.dto.CombatRequestDTO;
 import com.khj.mtvsfinalbe.combat.dto.CombatResponseDTO;
 import com.khj.mtvsfinalbe.combat.repository.CombatRepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class CombatService {
     }
 
     @Transactional
-    public CombatResponseDTO saveCombat(CombatRequestDTO requestDto) {
+    public CombatResponseDTO saveCombat(Long memberId, CombatRequestDTO requestDto) {
         Combat combat = Combat.builder()
                 .created_at(requestDto.getCreated_at())
                 .damage_dealt(requestDto.getDamage_dealt())
@@ -34,7 +34,7 @@ public class CombatService {
                 .ally_injuries(requestDto.getAlly_injuries())
                 .ally_deaths(requestDto.getAlly_deaths())
                 .kills(requestDto.getKills())
-                .memberId(requestDto.getMemberId())
+                .memberId(memberId)
                 .last_updated(LocalDateTime.now())
                 .build();
         Combat savedCombat = combatRepository.save(combat);

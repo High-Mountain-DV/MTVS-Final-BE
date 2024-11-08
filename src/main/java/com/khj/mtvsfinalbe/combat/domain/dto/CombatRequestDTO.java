@@ -1,4 +1,4 @@
-package com.khj.mtvsfinalbe.combat.dto;
+package com.khj.mtvsfinalbe.combat.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
