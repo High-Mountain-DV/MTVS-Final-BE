@@ -27,7 +27,8 @@ public class CombatService {
      * @param requestDto 전투 데이터 요청 DTO
      * @return 저장된 Combat 데이터 응답 DTO
      */
-    @Transactional
+  
+   @Transactional
     public CombatResponseDTO saveCombat(Long memberId, CombatRequestDTO requestDto) {
         Combat combat = Combat.builder()
                 .createdAt(LocalDateTime.now())
@@ -47,6 +48,7 @@ public class CombatService {
         Combat savedCombat = combatRepository.save(combat);
         return convertToResponseDto(savedCombat);
     }
+
 
     /**
      * ID를 사용하여 특정 Combat 데이터를 조회하는 메서드

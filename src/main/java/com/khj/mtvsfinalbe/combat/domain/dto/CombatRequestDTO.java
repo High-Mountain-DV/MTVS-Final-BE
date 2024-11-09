@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CombatRequestDTO {
+
     private double damageDealt;     // 총 피해량
     private int assists;            // 어시스트 횟수
     private int playTime;           // 전투 시간

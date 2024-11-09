@@ -46,7 +46,7 @@ public class CombatController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "특정 Combat 데이터 조회", description = "ID를 통해 특정 Combat 데이터를 조회합니다.")
-    public ResponseEntity<CombatResponseDTO> getCombatById(@PathVariable(value = "id") Long id) {  // <- 변경된 부분
+    public ResponseEntity<CombatResponseDTO> getCombatById(@PathVariable(value = "id") Long id) {
         CombatResponseDTO combat = combatService.getCombatById(id);
         return combat != null ? ResponseEntity.ok(combat) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
