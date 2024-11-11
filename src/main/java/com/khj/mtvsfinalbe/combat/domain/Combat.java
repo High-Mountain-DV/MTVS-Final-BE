@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import com.khj.mtvsfinalbe.user.domain.User;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,7 +18,7 @@ public class Combat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 전투 기록의 고유 ID
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;   // 전투 세션 생성 시간
 
     private double damageDealt;        // 총 피해량
@@ -29,19 +30,19 @@ public class Combat {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated; // 마지막 데이터 업데이트 시간
 
-    private String nickname;           // 사용자 닉네임
     private double awareness;          // 상황 인지도
     private int allyInjuries;          // 아군 부상자 수
     private int allyDeaths;            // 아군 사망자 수
     private int kills;                 // 적군 사살 횟수
 
-    @Column(name = "member_id")
-    private Long memberId; // 사용자 ID
+    @ManyToOne(fetch = FetchType.LAZY) // 사용자와의 연관 관계 설정
+    @JoinColumn(name = "user_id", nullable = false) // 외래 키 설정
+    private User user; // 사용자 정보 (외래 키로 참조)
 
     @Builder
     public Combat(LocalDateTime createdAt, double damageDealt, int assists, int playTime, int score, double accuracy,
-                  LocalDateTime lastUpdated, String nickname, double awareness, int allyInjuries, int allyDeaths,
-                  int kills, Long memberId) {
+                  LocalDateTime lastUpdated, double awareness, int allyInjuries, int allyDeaths,
+                  int kills, User user) {
         this.createdAt = createdAt;
         this.damageDealt = damageDealt;
         this.assists = assists;
@@ -49,11 +50,10 @@ public class Combat {
         this.score = score;
         this.accuracy = accuracy;
         this.lastUpdated = lastUpdated;
-        this.nickname = nickname;
         this.awareness = awareness;
         this.allyInjuries = allyInjuries;
         this.allyDeaths = allyDeaths;
         this.kills = kills;
-        this.memberId = memberId;
+        this.user = user; // 사용자 정보를 설정합니다.
     }
 }

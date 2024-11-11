@@ -12,7 +12,6 @@ public class CombatRequestDTO {
     private int playTime;           // 전투 시간
     private int score;              // 전투 점수
     private double accuracy;        // 명중률
-    private String nickname;        // 사용자 닉네임
     private double awareness;       // 상황 인지도
     private int allyInjuries;       // 아군 부상자 수
     private int allyDeaths;         // 아군 사망자 수
