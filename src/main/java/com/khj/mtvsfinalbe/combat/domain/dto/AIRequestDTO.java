@@ -1,12 +1,14 @@
 package com.khj.mtvsfinalbe.combat.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-public class CombatRequestDTO {
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AIRequestDTO {
+    private int id; // AI 서버가 요구하는 'id' 필드
     private double damageDealt;
     private int assists;
     private int playTime;

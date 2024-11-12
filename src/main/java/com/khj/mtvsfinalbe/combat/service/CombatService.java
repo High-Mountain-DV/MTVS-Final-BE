@@ -1,6 +1,8 @@
 package com.khj.mtvsfinalbe.combat.service;
 
 import com.khj.mtvsfinalbe.combat.domain.Combat;
+import com.khj.mtvsfinalbe.combat.domain.dto.AIRequestDTO;
+import com.khj.mtvsfinalbe.combat.domain.dto.AIResponseDTO;
 import com.khj.mtvsfinalbe.combat.domain.dto.CombatRequestDTO;
 import com.khj.mtvsfinalbe.combat.domain.dto.CombatResponseDTO;
 import com.khj.mtvsfinalbe.combat.repository.CombatRepository;
@@ -19,10 +21,15 @@ public class CombatService {
 
     private final CombatRepository combatRepository;
     private final UserRepository userRepository;
+    private final AICommunicationService aiCommunicationService;
+    private final S3Service s3Service;
 
-    public CombatService(CombatRepository combatRepository, UserRepository userRepository) {
+    public CombatService(CombatRepository combatRepository, UserRepository userRepository,
+                         AICommunicationService aiCommunicationService, S3Service s3Service) {
         this.combatRepository = combatRepository;
         this.userRepository = userRepository;
+        this.aiCommunicationService = aiCommunicationService;
+        this.s3Service = s3Service;
     }
 
     @Transactional
@@ -46,25 +53,45 @@ public class CombatService {
                 .build();
 
         Combat savedCombat = combatRepository.save(combat);
+
+        // AIRequestDTO 생성, id를 int로 변환하여 설정하고 nickname을 제외
+        AIRequestDTO aiRequestDTO = new AIRequestDTO();
+        aiRequestDTO.setId(savedCombat.getId().intValue()); // Long 타입 id를 int로 변환하여 설정
+        aiRequestDTO.setDamageDealt(combat.getDamageDealt());
+        aiRequestDTO.setAssists(combat.getAssists());
+        aiRequestDTO.setPlayTime(combat.getPlayTime());
+        aiRequestDTO.setScore(combat.getScore());
+        aiRequestDTO.setAccuracy(combat.getAccuracy());
+        aiRequestDTO.setAwareness(combat.getAwareness());
+        aiRequestDTO.setAllyInjuries(combat.getAllyInjuries());
+        aiRequestDTO.setAllyDeaths(combat.getAllyDeaths());
+        aiRequestDTO.setKills(combat.getKills());
+
+        // AI에 데이터 전송 및 응답 처리
+        AIResponseDTO aiResponse = aiCommunicationService.sendDataToAI(aiRequestDTO);
+        System.out.println(aiResponse);
+
+        // AI 분석 결과 저장
+        savedCombat.setAnalysisResult(aiResponse.getResult());
+        combatRepository.save(savedCombat);
+
         return convertToResponseDto(savedCombat);
     }
 
     public CombatResponseDTO getCombatById(Long id) {
-        return combatRepository.findById(id)
-                .map(this::convertToResponseDto)
-                .orElse(null);
-    }
-
-    public CombatResponseDTO getLatestCombatByUser(User user) {
-        Combat latestCombat = combatRepository.findTopByUserOrderByCreatedAtDesc(user);
-        return latestCombat != null ? convertToResponseDto(latestCombat) : null;
+        Combat combat = combatRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid combat ID"));
+        return convertToResponseDto(combat);
     }
 
     public List<CombatResponseDTO> getCombatsByUser(User user) {
         List<Combat> combats = combatRepository.findByUser(user, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return combats.stream()
-                .map(this::convertToResponseDto)
-                .collect(Collectors.toList());
+        return combats.stream().map(this::convertToResponseDto).collect(Collectors.toList());
+    }
+
+    public CombatResponseDTO getLatestCombatByUser(User user) {
+        Combat latestCombat = combatRepository.findTopByUserOrderByCreatedAtDesc(user);
+        return convertToResponseDto(latestCombat);
     }
 
     private CombatResponseDTO convertToResponseDto(Combat combat) {
@@ -77,11 +104,13 @@ public class CombatService {
         responseDto.setScore(combat.getScore());
         responseDto.setAccuracy(combat.getAccuracy());
         responseDto.setLastUpdated(combat.getLastUpdated());
-        responseDto.setNickname(combat.getUser().getNickname()); // User의 닉네임 설정
+        responseDto.setNickname(combat.getUser().getNickname());
         responseDto.setAwareness(combat.getAwareness());
         responseDto.setAllyInjuries(combat.getAllyInjuries());
         responseDto.setAllyDeaths(combat.getAllyDeaths());
         responseDto.setKills(combat.getKills());
+        responseDto.setImageUrl(combat.getImageUrl());
+        responseDto.setAnalysisResult(combat.getAnalysisResult());
         return responseDto;
     }
 }

@@ -63,6 +63,9 @@ dependencies {
     // 테스트 관련
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    //aws sdk for s3 의존성 추기
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.526'
 }
 
 tasks.named('test') {
