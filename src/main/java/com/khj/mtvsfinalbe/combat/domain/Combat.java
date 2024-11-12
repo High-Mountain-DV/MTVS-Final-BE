@@ -37,8 +37,9 @@ public class Combat {
     private int allyDeaths;
     private int kills;
 
-    private String imageUrl;  // S3 URL for AI result image
-    private String analysisResult;  // AI analysis result
+    private String radarChart;  // S3 URL for AI result image
+    @Column(columnDefinition = "TEXT", length = 1000)
+    private String feedback;     // AI analysis feedback
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -47,7 +48,7 @@ public class Combat {
     @Builder
     public Combat(LocalDateTime createdAt, double damageDealt, int assists, int playTime, int score, double accuracy,
                   LocalDateTime lastUpdated, double awareness, int allyInjuries, int allyDeaths,
-                  int kills, User user, String imageUrl, String analysisResult) {
+                  int kills, User user, String radarChart, String feedback) {
         this.createdAt = createdAt;
         this.damageDealt = damageDealt;
         this.assists = assists;
@@ -60,7 +61,7 @@ public class Combat {
         this.allyDeaths = allyDeaths;
         this.kills = kills;
         this.user = user;
-        this.imageUrl = imageUrl;
-        this.analysisResult = analysisResult;
+        this.radarChart = radarChart;
+        this.feedback = feedback;
     }
 }

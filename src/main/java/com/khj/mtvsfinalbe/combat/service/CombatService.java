@@ -54,25 +54,32 @@ public class CombatService {
 
         Combat savedCombat = combatRepository.save(combat);
 
-        // AIRequestDTO 생성, id를 int로 변환하여 설정하고 nickname을 제외
-        AIRequestDTO aiRequestDTO = new AIRequestDTO();
-        aiRequestDTO.setId(savedCombat.getId().intValue()); // Long 타입 id를 int로 변환하여 설정
-        aiRequestDTO.setDamageDealt(combat.getDamageDealt());
-        aiRequestDTO.setAssists(combat.getAssists());
-        aiRequestDTO.setPlayTime(combat.getPlayTime());
-        aiRequestDTO.setScore(combat.getScore());
-        aiRequestDTO.setAccuracy(combat.getAccuracy());
-        aiRequestDTO.setAwareness(combat.getAwareness());
-        aiRequestDTO.setAllyInjuries(combat.getAllyInjuries());
-        aiRequestDTO.setAllyDeaths(combat.getAllyDeaths());
-        aiRequestDTO.setKills(combat.getKills());
+        // AIRequestDTO 생성 및 데이터 전송
+        AIRequestDTO aiRequestDTO = new AIRequestDTO(
+                savedCombat.getId().intValue(),
+                combat.getDamageDealt(),
+                combat.getAssists(),
+                combat.getPlayTime(),
+                combat.getScore(),
+                combat.getAccuracy(),
+                combat.getAwareness(),
+                combat.getAllyInjuries(),
+                combat.getAllyDeaths(),
+                combat.getKills()
+        );
 
-        // AI에 데이터 전송 및 응답 처리
+        // AI 응답 처리
         AIResponseDTO aiResponse = aiCommunicationService.sendDataToAI(aiRequestDTO);
-        System.out.println(aiResponse);
+        System.out.println("----------------> AI Response: " + aiResponse);
 
-        // AI 분석 결과 저장
-        savedCombat.setAnalysisResult(aiResponse.getResult());
+        // radarChart (이미지)를 S3에 업로드하고, 해당 URL을 Combat 엔티티에 설정
+//        String radarChartUrl = s3Service.uploadImage(aiResponse.getRadarChart());
+//        savedCombat.setRadarChart(radarChartUrl);
+
+        // feedback을 Combat 엔티티에 설정
+        savedCombat.setFeedback(aiResponse.getFeedback());
+
+        // Combat 엔티티 저장
         combatRepository.save(savedCombat);
 
         return convertToResponseDto(savedCombat);
@@ -109,8 +116,8 @@ public class CombatService {
         responseDto.setAllyInjuries(combat.getAllyInjuries());
         responseDto.setAllyDeaths(combat.getAllyDeaths());
         responseDto.setKills(combat.getKills());
-        responseDto.setImageUrl(combat.getImageUrl());
-        responseDto.setAnalysisResult(combat.getAnalysisResult());
+        responseDto.setRadarChart(combat.getRadarChart());  // radarChart URL
+        responseDto.setFeedback(combat.getFeedback());      // feedback
         return responseDto;
     }
 }
