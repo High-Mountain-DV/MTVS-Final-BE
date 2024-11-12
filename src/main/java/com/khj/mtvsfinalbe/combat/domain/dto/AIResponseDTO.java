@@ -1,13 +1,16 @@
 package com.khj.mtvsfinalbe.combat.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class AIResponseDTO {
-    private String base64Image;
-    private String result;
+    @JsonProperty("radar_chart")
+    private String radarChart;  // JSON의 "radar_chart" 필드를 매핑
+
+    private String feedback;    // JSON의 "feedback" 필드를 매핑
 }

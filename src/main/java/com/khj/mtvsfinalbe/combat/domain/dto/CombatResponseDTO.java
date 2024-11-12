@@ -20,6 +20,6 @@ public class CombatResponseDTO {
     private int allyInjuries;
     private int allyDeaths;
     private int kills;
-    private String imageUrl;
-    private String analysisResult;
+    private String radarChart;
+    private String feedback;
 }
