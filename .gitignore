@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 **/src/main/resources/application-secrets.yml
 **/src/main/resources/application.properties
+**/src/main/resources/appplication-aws.yml
 
 ### STS ###
 .apt_generated

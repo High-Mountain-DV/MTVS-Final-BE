@@ -72,9 +72,9 @@ public class CombatService {
         AIResponseDTO aiResponse = aiCommunicationService.sendDataToAI(aiRequestDTO);
         System.out.println("----------------> AI Response: " + aiResponse);
 
-        // radarChart (이미지)를 S3에 업로드하고, 해당 URL을 Combat 엔티티에 설정
-//        String radarChartUrl = s3Service.uploadImage(aiResponse.getRadarChart());
-//        savedCombat.setRadarChart(radarChartUrl);
+         //radarChart (이미지)를 S3에 업로드하고, 해당 URL을 Combat 엔티티에 설정
+        String radarChartUrl = s3Service.uploadImage(aiResponse.getRadarChart());
+        savedCombat.setRadarChart(radarChartUrl);
 
         // feedback을 Combat 엔티티에 설정
         savedCombat.setFeedback(aiResponse.getFeedback());
