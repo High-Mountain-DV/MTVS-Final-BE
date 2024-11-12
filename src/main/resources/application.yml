@@ -8,6 +8,11 @@ spring:
   profiles:
     active: default,secrets
 
+#aws:
+#  s3:
+#    bucket:
+#      name: your-s3-bucket-name  # 민감하지 않은 S3 버킷 이름
+
   #  // test DB (DB ?? ? ?? ?? ??)
   #  datasource:
   #    url: jdbc:h2:mem:testdb
