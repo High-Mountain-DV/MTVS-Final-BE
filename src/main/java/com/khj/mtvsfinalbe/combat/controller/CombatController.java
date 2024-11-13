@@ -74,6 +74,15 @@ public class CombatController {
         return ResponseEntity.ok(combats);
     }
 
+//    @GetMapping("/commander/user/{id}")
+//    @Operation(summary = "특정 훈련생 전투 데이터 조회", description = "특정 훈련생의 모든 전투 데이터를 조회합니다.")
+//    public ResponseEntity<List<CombatResponseDTO>> getCombatsByUserForUnreal(@PathVariable(value = "id") Long id) {
+//        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+//        List<CombatResponseDTO> combats = combatService.getCombatsByUser(user);
+//        return ResponseEntity.ok(combats);
+//    }
+
+
     // 지휘관 전용 특정 훈련생의 최신 전투 데이터를 조회할 수 있는 API
 //    @PreAuthorize("hasRole('COMMANDER')")
     @GetMapping("/commander/user/{userId}/latest")
@@ -83,5 +92,13 @@ public class CombatController {
         CombatResponseDTO latestCombat = combatService.getLatestCombatByUser(user);
         return latestCombat != null ? ResponseEntity.ok(latestCombat) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+//
+//    @GetMapping("/commander/user/{id}/latest")
+//    @Operation(summary = "특정 훈련생의 최신 Combat 데이터 조회", description = "특정 훈련생의 최신 전투 데이터를 조회합니다.")
+//    public ResponseEntity<CombatResponseDTO> getLatestCombatByUserForUnreal(@PathVariable(value = "id") Long id) {
+//        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+//        CombatResponseDTO latestCombat = combatService.getLatestCombatByUser(user);
+//        return latestCombat != null ? ResponseEntity.ok(latestCombat) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//    }
 
 }
