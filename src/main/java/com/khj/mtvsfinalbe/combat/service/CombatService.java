@@ -89,6 +89,7 @@ public class CombatService {
 
         // AI의 feedback 데이터를 Combat 객체에 설정
         savedCombat.setFeedback(aiResponse.getFeedback());
+        savedCombat.setRadarChart(radarChartUrl);
 
         // 수정된 Combat 데이터 저장
         combatRepository.save(savedCombat);
