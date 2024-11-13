@@ -6,12 +6,12 @@ spring:
     default-property-inclusion: non_null
 
   profiles:
-    active: default,secrets
+    include: secrets, aws
 
-#aws:
-#  s3:
-#    bucket:
-#      name: your-s3-bucket-name  # 민감하지 않은 S3 버킷 이름
+  config:
+    import:
+      - optional:file:./application-secrets.yml
+      - optional:file:./application-aws.yml
 
   #  // test DB (DB ?? ? ?? ?? ??)
   #  datasource:
