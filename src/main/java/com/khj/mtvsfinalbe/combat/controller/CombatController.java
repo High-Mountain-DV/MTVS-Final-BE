@@ -64,23 +64,24 @@ public class CombatController {
         return latestCombat != null ? ResponseEntity.ok(latestCombat) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    // 지휘관 전용 특정 훈련생의 모든 전투 데이터를 조회할 수 있는 API
-    @PreAuthorize("hasRole('COMMANDER')")
+    // 지휘관 전용 특정 훈련생의 모든 전투 데이터를 조회할 수 있는 API (
+//    @PreAuthorize("hasRole('COMMANDER')")
     @GetMapping("/commander/user/{userId}")
     @Operation(summary = "지휘관 전용 특정 훈련생 전투 데이터 조회", description = "지휘관이 특정 훈련생의 모든 전투 데이터를 조회합니다.")
-    public ResponseEntity<List<CombatResponseDTO>> getCombatsByUserForCommander(@PathVariable Long userId) {
+    public ResponseEntity<List<CombatResponseDTO>> getCombatsByUserForUnreal(@PathVariable(value = "userId") Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         List<CombatResponseDTO> combats = combatService.getCombatsByUser(user);
         return ResponseEntity.ok(combats);
     }
 
     // 지휘관 전용 특정 훈련생의 최신 전투 데이터를 조회할 수 있는 API
-    @PreAuthorize("hasRole('COMMANDER')")
+//    @PreAuthorize("hasRole('COMMANDER')")
     @GetMapping("/commander/user/{userId}/latest")
     @Operation(summary = "지휘관 전용 특정 훈련생의 최신 Combat 데이터 조회", description = "지휘관이 특정 훈련생의 최신 전투 데이터를 조회합니다.")
-    public ResponseEntity<CombatResponseDTO> getLatestCombatByUserForCommander(@PathVariable Long userId) {
+    public ResponseEntity<CombatResponseDTO> getLatestCombatByUserForUnreal(@PathVariable(value = "userId") Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         CombatResponseDTO latestCombat = combatService.getLatestCombatByUser(user);
         return latestCombat != null ? ResponseEntity.ok(latestCombat) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
 }
