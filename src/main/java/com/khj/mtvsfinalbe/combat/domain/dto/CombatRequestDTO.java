@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class CombatRequestDTO {
 
+    private Long userId;
     private double damageDealt;
     private int assists;
     private int playTime;

@@ -31,11 +31,22 @@ public class CombatController {
         this.userRepository = userRepository;
     }
 
+//    @PostMapping
+//    @Operation(summary = "Combat 데이터 생성", description = "새로운 Combat 데이터를 생성합니다.")
+//    public ResponseEntity<CombatResponseDTO> saveCombat(@RequestBody CombatRequestDTO requestDto) {
+//        Long userId = getCurrentUserId();
+//        CombatResponseDTO savedCombat = combatService.saveCombat(userId, requestDto);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(savedCombat);
+//    }
+
     @PostMapping
     @Operation(summary = "Combat 데이터 생성", description = "새로운 Combat 데이터를 생성합니다.")
     public ResponseEntity<CombatResponseDTO> saveCombat(@RequestBody CombatRequestDTO requestDto) {
-        Long userId = getCurrentUserId();
-        CombatResponseDTO savedCombat = combatService.saveCombat(userId, requestDto);
+        // JSON에서 userId가 포함된 경우 해당 userId를 사용, 없으면 현재 로그인된 사용자의 ID를 사용
+        Long userId = requestDto.getUserId() != null ? requestDto.getUserId() : getCurrentUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        CombatResponseDTO savedCombat = combatService.saveCombat(user.getId(), requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCombat);
     }
 
