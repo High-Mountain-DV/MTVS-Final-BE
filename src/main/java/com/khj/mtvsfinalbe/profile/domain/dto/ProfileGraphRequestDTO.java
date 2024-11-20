@@ -1,5 +1,6 @@
 package com.khj.mtvsfinalbe.profile.domain.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder // 빌더 패턴을 생성하기 위한 어노테이션 추가
 public class ProfileGraphRequestDTO {
     private Long userId; // 사용자 ID
     private int assists; // 어시스트 수
