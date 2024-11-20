@@ -137,6 +137,25 @@ public class CombatService {
     }
 
     /**
+     * 특정 사용자의 이전 Combat 데이터를 조회
+     *
+     * @param user 조회할 사용자
+     * @param currentCombatDate 현재 Combat의 날짜
+     * @return 이전 Combat 데이터의 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public CombatResponseDTO getPreviousCombat(User user, LocalDateTime currentCombatDate) {
+        Combat previousCombat = combatRepository.findFirstByUserAndCreatedAtBeforeOrderByCreatedAtDesc(user, currentCombatDate);
+
+        // 이전 데이터가 없으면 null 반환
+        if (previousCombat == null) {
+            return null;
+        }
+
+        return convertToResponseDto(previousCombat);
+    }
+
+    /**
      * Combat 데이터를 CombatResponseDTO로 변환하는 메소드
      *
      * @param combat 변환할 Combat 데이터
