@@ -1,24 +1,35 @@
 package com.khj.mtvsfinalbe.profile.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
-/**
- * AI 서버로 전달되는 데이터 구조를 나타내는 Wrapper DTO
- */
 @Data
 @Builder
 public class AIRequestWrapperDTO {
-    private CombatData previousData; // 내부 클래스 이름 변경
-    private CombatData currentData;  // 내부 클래스 이름 변경
+    @JsonProperty("previous_data")
+    private CombatData previousData;
+
+    @JsonProperty("current_data")
+    private CombatData currentData;
 
     @Data
     @Builder
-    public static class CombatData {
-        private int assists;
+    public static class CombatData {  // static 키워드 추가
+        @JsonProperty("assists")
+        private int assists = 0; // 기본값 추가
+        @JsonProperty("kills")
         private int kills;
+        @JsonProperty("accuracy")
         private double accuracy;
+        @JsonProperty("awareness")
         private double awareness;
-        private int playTime;
+        @JsonProperty("playTime")
+        private int playTime;  // AI 서버 요구 사항에 맞게 수정
+
+        // CombatData 빌더에 기본값 설정
+        public static class CombatDataBuilder {
+            private int assists = 0; // 기본값
+        }
     }
 }
