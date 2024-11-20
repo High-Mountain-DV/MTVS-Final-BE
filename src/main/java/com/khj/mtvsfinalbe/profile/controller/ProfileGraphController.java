@@ -1,6 +1,5 @@
 package com.khj.mtvsfinalbe.profile.controller;
 
-import com.khj.mtvsfinalbe.profile.domain.dto.ProfileGraphRequestDTO;
 import com.khj.mtvsfinalbe.profile.domain.dto.ProfileGraphResponseDTO;
 import com.khj.mtvsfinalbe.profile.service.ProfileGraphService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,9 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * ProfileGraph API 엔드포인트
- */
+import static com.khj.mtvsfinalbe._core.utils.SecurityUtils.getCurrentUserId;
+
 @RestController
 @RequestMapping("/api/profiles")
 @Tag(name = "Profile API", description = "사용자 프로필 누적 그래프 API")
@@ -25,27 +23,28 @@ public class ProfileGraphController {
     }
 
     /**
-     * 그래프 데이터를 저장 또는 업데이트
+     * 현재 로그인된 사용자의 누적 그래프 데이터를 조회
      *
-     * @param request 사용자 요청 데이터
-     * @return 성공 상태
+     * @return 프로필 그래프 응답 DTO 리스트
      */
-    @PostMapping("/graph")
-    @Operation(summary = "각각의 그래프 데이터 저장 또는 업데이트", description = "Combat 데이터를 활용하여 그래프 데이터를 저장하거나 업데이트합니다.")
-    public ResponseEntity<Void> saveOrUpdateGraph(@RequestBody ProfileGraphRequestDTO request) {
-        profileGraphService.saveOrUpdateGraph(request);
-        return ResponseEntity.ok().build();
+    @GetMapping("/graph")
+    @Operation(summary = "현재 로그인된 사용자의 누적 그래프 조회", description = "현재 로그인된 사용자의 Combat 데이터를 기반으로 프로필 누적 그래프 데이터를 생성 및 반환합니다.")
+    public ResponseEntity<List<ProfileGraphResponseDTO>> getProfileGraphForCurrentUser() {
+        Long currentUserId = getCurrentUserId();
+        List<ProfileGraphResponseDTO> profileGraphs = profileGraphService.getProfileGraphs(currentUserId);
+        return ResponseEntity.ok(profileGraphs);
     }
 
     /**
      * 특정 사용자의 누적 그래프 데이터를 조회
      *
      * @param userId 사용자 ID
-     * @return 누적 그래프 데이터 리스트
+     * @return 프로필 그래프 응답 DTO 리스트
      */
-    @GetMapping("/graph")
-    @Operation(summary = "사용자의 누적 그래프 조회", description = "사용자의 모든 누적 그래프 데이터를 조회합니다.")
-    public ResponseEntity<List<ProfileGraphResponseDTO>> getGraphsByUser(@RequestParam Long userId) {
-        return ResponseEntity.ok(profileGraphService.getGraphsByUser(userId));
+    @GetMapping("/graph/user")
+    @Operation(summary = "특정 사용자의 누적 그래프 조회", description = "특정 사용자의 Combat 데이터를 기반으로 프로필 누적 그래프 데이터를 생성 및 반환합니다.")
+    public ResponseEntity<List<ProfileGraphResponseDTO>> getProfileGraphByUserId(@RequestParam Long userId) {
+        List<ProfileGraphResponseDTO> profileGraphs = profileGraphService.getProfileGraphs(userId);
+        return ResponseEntity.ok(profileGraphs);
     }
 }
