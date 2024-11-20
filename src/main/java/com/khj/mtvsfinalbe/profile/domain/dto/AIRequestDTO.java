@@ -17,4 +17,9 @@ public class AIRequestDTO {
     private double accuracy; // 정확도
     private double awareness; // 상황인지
     private int playTime; // 플레이 시간
+
+    // assists에 기본값 추가 (예: 0)
+    public static class AIRequestDTOBuilder {
+        private int assists = 0; // 기본값
+    }
 }

@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * AI 서버와 통신을 담당하는 서비스 클래스
  */
@@ -78,9 +81,79 @@ public class AICommunicationService {
 
         HttpEntity<AIRequestWrapperDTO> requestEntity = new HttpEntity<>(requestWrapperDTO, headers);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+                aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, Map.class);
 
-        return responseEntity.getBody(); // 누적 피드백 반환
+        // 응답 데이터 검증 및 기본값 처리
+        Map<String, Object> feedback = validateAndProcessFeedback(responseEntity.getBody());
+
+        return feedback.toString(); // 반환 데이터 직렬화
+    }
+
+    /**
+     * 피드백 데이터 유효성 검증 및 기본값 처리
+     *
+     * @param feedback 응답 데이터 맵
+     * @return 유효성이 검증된 데이터
+     */
+    private Map<String, Object> validateAndProcessFeedback(Map<String, Object> feedback) {
+        if (feedback == null) {
+            feedback = new HashMap<>();
+        }
+
+        // 필수 필드 및 기본값 정의
+        String[] requiredFields = {"assists", "kills", "accuracy", "awareness", "playTime"};
+        for (String field : requiredFields) {
+            Object value = feedback.get(field);
+            if (value == null) {
+                feedback.put(field, field.equals("accuracy") || field.equals("awareness") ? 0.0 : 0);
+            } else {
+                if (field.equals("accuracy") || field.equals("awareness")) {
+                    feedback.put(field, convertToDouble(value));
+                } else {
+                    feedback.put(field, convertToInteger(value));
+                }
+            }
+        }
+
+        return feedback;
+    }
+
+    /**
+     * 숫자 값을 Double로 변환
+     *
+     * @param value 변환할 값
+     * @return 변환된 Double 값
+     */
+    private double convertToDouble(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
+        } else if (value instanceof String) {
+            try {
+                return Double.parseDouble((String) value);
+            } catch (NumberFormatException e) {
+                return 0.0; // 잘못된 값의 경우 기본값 반환
+            }
+        }
+        return 0.0; // 예상치 못한 데이터 타입 처리
+    }
+
+    /**
+     * 숫자 값을 Integer로 변환
+     *
+     * @param value 변환할 값
+     * @return 변환된 Integer 값
+     */
+    private int convertToInteger(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        } else if (value instanceof String) {
+            try {
+                return Integer.parseInt((String) value);
+            } catch (NumberFormatException e) {
+                return 0; // 잘못된 값의 경우 기본값 반환
+            }
+        }
+        return 0; // 예상치 못한 데이터 타입 처리
     }
 }

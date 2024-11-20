@@ -1,5 +1,6 @@
 package com.khj.mtvsfinalbe.profile.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khj.mtvsfinalbe.combat.domain.dto.CombatResponseDTO;
 import com.khj.mtvsfinalbe.combat.service.AICommunicationService;
 import com.khj.mtvsfinalbe.combat.service.CombatService;
@@ -60,7 +61,12 @@ public class ProfileGraphService {
                     .playTime(previousCombat.getPlayTime())
                     .build()
                     : AIRequestWrapperDTO.CombatData.builder()
-                    .assists(0).kills(0).accuracy(0.0).awareness(0.0).playTime(0).build();
+                    .assists(0) // 기본값
+                    .kills(0)
+                    .accuracy(0.0)
+                    .awareness(0.0)
+                    .playTime(0)
+                    .build();
 
             AIRequestWrapperDTO.CombatData currentData = AIRequestWrapperDTO.CombatData.builder()
                     .assists(combat.getAssists())
@@ -75,8 +81,11 @@ public class ProfileGraphService {
                     .currentData(currentData)
                     .build();
 
-            log.info("ai dto: {}", requestWrapperDTO.getCurrentData().getAccuracy());
-            log.info("ai dto: {}", requestWrapperDTO.getPreviousData().getPlayTime());
+            try {
+                log.info("AIRequestWrapperDTO JSON: {}", new ObjectMapper().writeValueAsString(requestWrapperDTO));
+            } catch (Exception e) {
+                log.error("Failed to serialize AIRequestWrapperDTO", e);
+            }
 
             String aggregatedFeedback = aiCommunicationService.getAggregatedFeedback(requestWrapperDTO);
 
@@ -126,4 +135,4 @@ public class ProfileGraphService {
                     .build();
         }).collect(Collectors.toList());
     }
-    }
+}
