@@ -1,107 +1,129 @@
 package com.khj.mtvsfinalbe.profile.service;
 
+import com.khj.mtvsfinalbe.combat.domain.dto.CombatResponseDTO;
 import com.khj.mtvsfinalbe.combat.service.AICommunicationService;
+import com.khj.mtvsfinalbe.combat.service.CombatService;
 import com.khj.mtvsfinalbe.profile.domain.ProfileGraph;
-import com.khj.mtvsfinalbe.profile.domain.dto.ProfileGraphRequestDTO;
+import com.khj.mtvsfinalbe.profile.domain.dto.AIRequestWrapperDTO;
 import com.khj.mtvsfinalbe.profile.domain.dto.ProfileGraphResponseDTO;
 import com.khj.mtvsfinalbe.profile.repository.ProfileGraphRepository;
 import com.khj.mtvsfinalbe.user.domain.User;
 import com.khj.mtvsfinalbe.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * ProfileGraph 비즈니스 로직을 처리하는 서비스
- */
+@Slf4j
 @Service
 public class ProfileGraphService {
 
-    private final ProfileGraphRepository profileGraphRepository;
     private final UserRepository userRepository;
+    private final CombatService combatService;
     private final AICommunicationService aiCommunicationService;
+    private final ProfileGraphRepository profileGraphRepository;
 
-    public ProfileGraphService(ProfileGraphRepository profileGraphRepository, UserRepository userRepository, AICommunicationService aiCommunicationService) {
-        this.profileGraphRepository = profileGraphRepository;
+    public ProfileGraphService(UserRepository userRepository,
+                               CombatService combatService,
+                               AICommunicationService aiCommunicationService,
+                               ProfileGraphRepository profileGraphRepository) {
         this.userRepository = userRepository;
+        this.combatService = combatService;
         this.aiCommunicationService = aiCommunicationService;
+        this.profileGraphRepository = profileGraphRepository;
     }
 
-    /**
-     * 그래프 데이터를 저장하거나 업데이트하는 메서드
-     *
-     * @param request 사용자 요청 데이터
-     */
     @Transactional
-    public void saveOrUpdateGraph(ProfileGraphRequestDTO request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-
-        LocalDate today = LocalDate.now();
-
-        // AI에서 누적 피드백 가져오기
-        String aggregatedFeedback = aiCommunicationService.getAggregatedFeedback(request);
-
-        ProfileGraph existingGraph = profileGraphRepository.findByUserAndDate(user, today);
-
-        if (existingGraph != null) {
-            // 기존 데이터 업데이트
-            existingGraph.setAssists(request.getAssists());
-            existingGraph.setKills(request.getKills());
-            existingGraph.setAccuracy(request.getAccuracy());
-            existingGraph.setAwareness(request.getAwareness());
-            existingGraph.setPlayTime(request.getPlayTime());
-            existingGraph.setAggregatedFeedback(aggregatedFeedback);
-        } else {
-            // 새 데이터 저장
-            ProfileGraph newGraph = ProfileGraph.builder()
-                    .user(user)
-                    .date(today)
-                    .assists(request.getAssists())
-                    .kills(request.getKills())
-                    .accuracy(request.getAccuracy())
-                    .awareness(request.getAwareness())
-                    .playTime(request.getPlayTime())
-                    .aggregatedFeedback(aggregatedFeedback)
-                    .build();
-            profileGraphRepository.save(newGraph);
-        }
-    }
-
-    /**
-     * 특정 사용자의 누적 그래프 데이터를 조회하는 메서드
-     *
-     * @param userId 사용자 ID
-     * @return 누적 그래프 데이터 리스트
-     */
-    @Transactional(readOnly = true)
-    public List<ProfileGraphResponseDTO> getGraphsByUser(Long userId) {
+    public List<ProfileGraphResponseDTO> getProfileGraphs(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        return profileGraphRepository.findByUserOrderByDateAsc(user)
-                .stream()
-                .map(this::convertToResponseDto)
-                .collect(Collectors.toList());
-    }
 
-    /**
-     * 엔티티를 DTO로 변환하는 메서드
-     *
-     * @param graph ProfileGraph 엔티티
-     * @return ProfileGraphResponseDTO
-     */
-    private ProfileGraphResponseDTO convertToResponseDto(ProfileGraph graph) {
-        return ProfileGraphResponseDTO.builder()
-                .date(graph.getDate())
-                .assists(graph.getAssists())
-                .kills(graph.getKills())
-                .accuracy(graph.getAccuracy())
-                .awareness(graph.getAwareness())
-                .playTime(graph.getPlayTime())
-                .aggregatedFeedback(graph.getAggregatedFeedback())
-                .build();
+        log.info("Fetching Combat data for User {}", userId);
+
+        List<CombatResponseDTO> combatData = combatService.getCombatsByUser(user);
+
+        log.info("Combat Data for User {}: {}", userId, combatData);
+
+        return combatData.stream().map(combat -> {
+            CombatResponseDTO previousCombat = combatService.getPreviousCombat(user, combat.getCreatedAt());
+
+            log.info("Previous Combat for User {}, Date {}: {}", userId, combat.getCreatedAt(), previousCombat);
+
+            AIRequestWrapperDTO.CombatData previousData = previousCombat != null
+                    ? AIRequestWrapperDTO.CombatData.builder()
+                    .assists(previousCombat.getAssists())
+                    .kills(previousCombat.getKills())
+                    .accuracy(previousCombat.getAccuracy())
+                    .awareness(previousCombat.getAwareness())
+                    .playTime(previousCombat.getPlayTime())
+                    .build()
+                    : AIRequestWrapperDTO.CombatData.builder()
+                    .assists(0).kills(0).accuracy(0.0).awareness(0.0).playTime(0).build();
+
+            AIRequestWrapperDTO.CombatData currentData = AIRequestWrapperDTO.CombatData.builder()
+                    .assists(combat.getAssists())
+                    .kills(combat.getKills())
+                    .accuracy(combat.getAccuracy())
+                    .awareness(combat.getAwareness())
+                    .playTime(combat.getPlayTime())
+                    .build();
+
+            AIRequestWrapperDTO requestWrapperDTO = AIRequestWrapperDTO.builder()
+                    .previousData(previousData)
+                    .currentData(currentData)
+                    .build();
+
+            log.info("ai dto: {}", requestWrapperDTO.getCurrentData().getAccuracy());
+            log.info("ai dto: {}", requestWrapperDTO.getPreviousData().getPlayTime());
+
+            String aggregatedFeedback = aiCommunicationService.getAggregatedFeedback(requestWrapperDTO);
+
+            log.info("Aggregated Feedback for Combat {}: {}", combat.getId(), aggregatedFeedback);
+
+            ProfileGraph existingGraph = profileGraphRepository.findByUserAndDate(user, combat.getCreatedAt().toLocalDate());
+            if (existingGraph != null) {
+                log.warn("ProfileGraph already exists for User {}, Date {}: {}", user.getId(), combat.getCreatedAt().toLocalDate(), existingGraph);
+                return ProfileGraphResponseDTO.builder()
+                        .date(existingGraph.getDate())
+                        .assists(existingGraph.getAssists())
+                        .kills(existingGraph.getKills())
+                        .accuracy(existingGraph.getAccuracy())
+                        .awareness(existingGraph.getAwareness())
+                        .playTime(existingGraph.getPlayTime())
+                        .aggregatedFeedback(existingGraph.getAggregatedFeedback())
+                        .build();
+            }
+
+            ProfileGraph profileGraph = ProfileGraph.builder()
+                    .user(user)
+                    .date(combat.getCreatedAt().toLocalDate())
+                    .assists(combat.getAssists())
+                    .kills(combat.getKills())
+                    .accuracy(combat.getAccuracy())
+                    .awareness(combat.getAwareness())
+                    .playTime(combat.getPlayTime())
+                    .aggregatedFeedback(aggregatedFeedback)
+                    .build();
+
+            try {
+                log.info("Saving ProfileGraph for User {}, Date {}", userId, combat.getCreatedAt().toLocalDate());
+                profileGraphRepository.save(profileGraph);
+                log.info("ProfileGraph saved successfully!");
+            } catch (Exception e) {
+                log.error("Failed to save ProfileGraph for User {}, Date {}", userId, combat.getCreatedAt().toLocalDate(), e);
+            }
+
+            return ProfileGraphResponseDTO.builder()
+                    .date(combat.getCreatedAt().toLocalDate())
+                    .assists(combat.getAssists())
+                    .kills(combat.getKills())
+                    .accuracy(combat.getAccuracy())
+                    .awareness(combat.getAwareness())
+                    .playTime(combat.getPlayTime())
+                    .aggregatedFeedback(aggregatedFeedback)
+                    .build();
+        }).collect(Collectors.toList());
     }
-}
+    }
