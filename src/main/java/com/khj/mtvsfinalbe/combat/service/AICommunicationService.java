@@ -3,6 +3,7 @@ package com.khj.mtvsfinalbe.combat.service;
 import com.khj.mtvsfinalbe.combat.domain.dto.AIRequestDTO;
 import com.khj.mtvsfinalbe.combat.domain.dto.AIResponseDTO;
 import com.khj.mtvsfinalbe.profile.domain.dto.ProfileGraphRequestDTO;
+import com.khj.mtvsfinalbe.profile.domain.dto.AIRequestWrapperDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -48,7 +49,7 @@ public class AICommunicationService {
     }
 
     /**
-     * AI 서버로부터 누적 피드백 데이터를 가져오는 메서드
+     * AI 서버로부터 누적 피드백 데이터를 가져오는 메서드 (기존 방식)
      *
      * @param requestDTO 누적 피드백 요청 데이터
      * @return AI로부터 받은 누적 피드백
@@ -58,6 +59,24 @@ public class AICommunicationService {
         headers.set("Content-Type", "application/json"); // 요청의 Content-Type 설정
 
         HttpEntity<ProfileGraphRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, String.class);
+
+        return responseEntity.getBody(); // 누적 피드백 반환
+    }
+
+    /**
+     * AI 서버로부터 누적 피드백 데이터를 가져오는 메서드 (추가된 부분: 새로운 방식)
+     *
+     * @param requestWrapperDTO AI 요청 데이터 (현재 데이터와 이전 데이터를 포함)
+     * @return AI로부터 받은 누적 피드백
+     */
+    public String getAggregatedFeedback(AIRequestWrapperDTO requestWrapperDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json"); // 요청의 Content-Type 설정
+
+        HttpEntity<AIRequestWrapperDTO> requestEntity = new HttpEntity<>(requestWrapperDTO, headers);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, String.class);
