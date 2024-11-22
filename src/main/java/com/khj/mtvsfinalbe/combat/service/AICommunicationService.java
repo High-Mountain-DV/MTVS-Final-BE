@@ -1,9 +1,11 @@
 package com.khj.mtvsfinalbe.combat.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khj.mtvsfinalbe.combat.domain.dto.AIRequestDTO;
 import com.khj.mtvsfinalbe.combat.domain.dto.AIResponseDTO;
 import com.khj.mtvsfinalbe.profile.domain.dto.ProfileGraphRequestDTO;
 import com.khj.mtvsfinalbe.profile.domain.dto.AIRequestWrapperDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +21,12 @@ import java.util.Map;
  * AI 서버와 통신을 담당하는 서비스 클래스
  */
 @Service
+@Slf4j
 public class AICommunicationService {
 
     private final RestTemplate restTemplate;
-    private final String aiServerUrl; // Combat 데이터를 처리하는 AI 서버 URL
-    private final String aggregatedFeedbackUrl; // 누적 피드백을 처리하는 AI 서버 URL
+    private final String aiServerUrl;
+    private final String aggregatedFeedbackUrl;
 
     public AICommunicationService(RestTemplate restTemplate,
                                   @Value("${ai.server.url}") String aiServerUrl,
@@ -34,21 +37,26 @@ public class AICommunicationService {
     }
 
     /**
-     * Combat 데이터를 AI 서버로 전송하는 메서드
+     * Combat 데이터를 AI 서버로 전송
      *
      * @param aiRequestDTO AI로 전송할 Combat 데이터
      * @return AI의 응답 데이터
      */
     public AIResponseDTO sendDataToAI(AIRequestDTO aiRequestDTO) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json"); // 요청의 Content-Type 설정
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-Type", "application/json");
 
-        HttpEntity<AIRequestDTO> requestEntity = new HttpEntity<>(aiRequestDTO, headers);
+            HttpEntity<AIRequestDTO> requestEntity = new HttpEntity<>(aiRequestDTO, headers);
 
-        ResponseEntity<AIResponseDTO> responseEntity = restTemplate.exchange(
-                aiServerUrl, HttpMethod.POST, requestEntity, AIResponseDTO.class);
+            ResponseEntity<AIResponseDTO> responseEntity = restTemplate.exchange(
+                    aiServerUrl, HttpMethod.POST, requestEntity, AIResponseDTO.class);
 
-        return responseEntity.getBody(); // AI 응답 반환
+            return responseEntity.getBody();
+        } catch (Exception e) {
+            log.error("Failed to send data to AI server", e);
+            throw new RuntimeException("AI communication failed", e);
+        }
     }
 
     /**
@@ -58,102 +66,81 @@ public class AICommunicationService {
      * @return AI로부터 받은 누적 피드백
      */
     public String getAggregatedFeedback(ProfileGraphRequestDTO requestDTO) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json"); // 요청의 Content-Type 설정
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-Type", "application/json");
 
-        HttpEntity<ProfileGraphRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+            HttpEntity<ProfileGraphRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, String.class);
 
-        return responseEntity.getBody(); // 누적 피드백 반환
+            return responseEntity.getBody();
+        } catch (Exception e) {
+            log.error("Failed to fetch aggregated feedback (legacy)", e);
+            throw new RuntimeException("AI communication failed", e);
+        }
     }
 
     /**
-     * AI 서버로부터 누적 피드백 데이터를 가져오는 메서드 (추가된 부분: 새로운 방식)
+     * AI 서버로부터 누적 피드백 데이터를 가져오는 메서드 (새로운 방식)
      *
      * @param requestWrapperDTO AI 요청 데이터 (현재 데이터와 이전 데이터를 포함)
      * @return AI로부터 받은 누적 피드백
      */
     public String getAggregatedFeedback(AIRequestWrapperDTO requestWrapperDTO) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json"); // 요청의 Content-Type 설정
+        try {
+            ensureNonNullCombatData(requestWrapperDTO);
 
-        HttpEntity<AIRequestWrapperDTO> requestEntity = new HttpEntity<>(requestWrapperDTO, headers);
+            String requestBody = new ObjectMapper().writeValueAsString(requestWrapperDTO);
+            log.info("Sending aggregated feedback request: {}", requestBody);
 
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(
-                aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, Map.class);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-Type", "application/json");
 
-        // 응답 데이터 검증 및 기본값 처리
-        Map<String, Object> feedback = validateAndProcessFeedback(responseEntity.getBody());
+            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        return feedback.toString(); // 반환 데이터 직렬화
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    aggregatedFeedbackUrl, HttpMethod.POST, requestEntity, String.class);
+
+            String response = responseEntity.getBody();
+            log.info("Received aggregated feedback response: {}", response);
+
+            return response;
+        } catch (Exception e) {
+            log.error("Failed to fetch aggregated feedback (new)", e);
+            throw new RuntimeException("AI communication failed", e);
+        }
     }
 
     /**
-     * 피드백 데이터 유효성 검증 및 기본값 처리
+     * 요청 데이터의 CombatData가 null인 경우 기본값 설정
      *
-     * @param feedback 응답 데이터 맵
-     * @return 유효성이 검증된 데이터
+     * @param requestWrapperDTO 요청 데이터
      */
-    private Map<String, Object> validateAndProcessFeedback(Map<String, Object> feedback) {
-        if (feedback == null) {
-            feedback = new HashMap<>();
+    private void ensureNonNullCombatData(AIRequestWrapperDTO requestWrapperDTO) {
+        if (requestWrapperDTO.getPreviousData() == null) {
+            requestWrapperDTO.setPreviousData(
+                    AIRequestWrapperDTO.CombatData.builder()
+                            .assists(0)
+                            .kills(0)
+                            .accuracy(0.0)
+                            .awareness(0.0)
+                            .playTime(0)
+                            .build()
+            );
         }
 
-        // 필수 필드 및 기본값 정의
-        String[] requiredFields = {"assists", "kills", "accuracy", "awareness", "playTime"};
-        for (String field : requiredFields) {
-            Object value = feedback.get(field);
-            if (value == null) {
-                feedback.put(field, field.equals("accuracy") || field.equals("awareness") ? 0.0 : 0);
-            } else {
-                if (field.equals("accuracy") || field.equals("awareness")) {
-                    feedback.put(field, convertToDouble(value));
-                } else {
-                    feedback.put(field, convertToInteger(value));
-                }
-            }
+        if (requestWrapperDTO.getCurrentData() == null) {
+            requestWrapperDTO.setCurrentData(
+                    AIRequestWrapperDTO.CombatData.builder()
+                            .assists(0)
+                            .kills(0)
+                            .accuracy(0.0)
+                            .awareness(0.0)
+                            .playTime(0)
+                            .build()
+            );
         }
-
-        return feedback;
-    }
-
-    /**
-     * 숫자 값을 Double로 변환
-     *
-     * @param value 변환할 값
-     * @return 변환된 Double 값
-     */
-    private double convertToDouble(Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).doubleValue();
-        } else if (value instanceof String) {
-            try {
-                return Double.parseDouble((String) value);
-            } catch (NumberFormatException e) {
-                return 0.0; // 잘못된 값의 경우 기본값 반환
-            }
-        }
-        return 0.0; // 예상치 못한 데이터 타입 처리
-    }
-
-    /**
-     * 숫자 값을 Integer로 변환
-     *
-     * @param value 변환할 값
-     * @return 변환된 Integer 값
-     */
-    private int convertToInteger(Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).intValue();
-        } else if (value instanceof String) {
-            try {
-                return Integer.parseInt((String) value);
-            } catch (NumberFormatException e) {
-                return 0; // 잘못된 값의 경우 기본값 반환
-            }
-        }
-        return 0; // 예상치 못한 데이터 타입 처리
     }
 }

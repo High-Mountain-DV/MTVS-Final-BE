@@ -14,11 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
+@Slf4j
 public class ProfileGraphService {
 
     private final UserRepository userRepository;
@@ -134,5 +134,54 @@ public class ProfileGraphService {
                     .aggregatedFeedback(aggregatedFeedback)
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Map<String, Object> getProfileDashboard(Long userId) {
+        // 사용자 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+
+        // Combat 데이터를 날짜 순으로 가져오기
+        List<CombatResponseDTO> combatData = combatService.getCombatsByUser(user);
+
+        // 상위 5개의 Combat 데이터를 가져오기
+        List<Map<String, Object>> graphData = combatData.stream()
+                .sorted(Comparator.comparing(CombatResponseDTO::getCreatedAt).reversed())
+                .limit(5)
+                .map(combat -> {
+                    // 명시적으로 HashMap 생성
+                    Map<String, Object> dataMap = new HashMap<>();
+                    dataMap.put("date", combat.getCreatedAt().toLocalDate().toString());
+                    dataMap.put("kills", combat.getKills());
+                    dataMap.put("awareness", combat.getAwareness());
+                    dataMap.put("assists", combat.getAssists());
+                    dataMap.put("accuracy", combat.getAccuracy());
+                    dataMap.put("playTime", combat.getPlayTime());
+                    return dataMap;
+                })
+                .collect(Collectors.toList());
+
+        // 최신 Combat 데이터로 AI 피드백 요청
+        CombatResponseDTO latestCombat = combatService.getLatestCombatByUser(user);
+        AIRequestWrapperDTO.CombatData currentData = AIRequestWrapperDTO.CombatData.builder()
+                .assists(latestCombat.getAssists())
+                .kills(latestCombat.getKills())
+                .accuracy(latestCombat.getAccuracy())
+                .awareness(latestCombat.getAwareness())
+                .playTime(latestCombat.getPlayTime())
+                .build();
+
+        AIRequestWrapperDTO requestWrapperDTO = AIRequestWrapperDTO.builder()
+                .currentData(currentData)
+                .build();
+        String latestFeedback = aiCommunicationService.getAggregatedFeedback(requestWrapperDTO);
+
+        // 응답 데이터 조합
+        Map<String, Object> response = new HashMap<>();
+        response.put("graphData", graphData);
+        response.put("latestFeedback", latestFeedback);
+
+        return response;
     }
 }
