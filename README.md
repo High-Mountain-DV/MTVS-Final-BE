@@ -21,6 +21,8 @@
 | <img src = "https://avatars.githubusercontent.com/u/173024446?v=4" width = "100" height = "100"> | 
 |                            [@dev-hjk](https://github.com/dev-hjk)                               |
 
+<p><br>
+
 ### 🏆 백엔드 구현 내용 <br>
 1. **API 설계 및 구현**
    - **회원 관리**
@@ -63,10 +65,12 @@
      - **백엔드 → S3 → VR**의 데이터 흐름 테스트.
      - AI 분석 결과를 XR 환경으로 전달하는 최종 테스트 완료.
 
+<p><br>
 
 ### 🌠 아키텍쳐 설계 [System Architecture]
   ![image](https://github.com/user-attachments/assets/8aea84fd-fa86-4c53-87ce-f05d8eb979a8)
 
+<p><br>
 
 ### 📢 개발 환경
 - **Language**: Java 17
@@ -79,12 +83,15 @@
 - **Version Control**: GitHub
 - **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)
 
+<p><br>
+
 ### 🎯 프로젝트 성과
 - AI 분석 피드백 및 훈련 리포트 & 누적 리포트 -> S3 데이터 서빙을 통해 VR 환경에서 훈련 성과를 시각적으로 제공.
 - Spring Security와 JWT를 활용한 보안 강화로 안정성 높은 서비스 구현.
 - AWS S3와 ELK Stack을 통해 대량 데이터 저장 및 로깅 효율성 극대화.
 
-
+<p><br>
+   
 ## :busts_in_silhouette: Team Members '🏔️높은 산 깊은 골 팀 멤버 구성🪖' ##
 
 |                          BE 김혜진                           |                           XR 전승건                           |                          XR 최선우                           |                          XR 한수빈                           |
