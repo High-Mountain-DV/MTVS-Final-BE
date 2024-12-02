@@ -66,6 +66,10 @@ dependencies {
 
     //aws sdk for s3 의존성 추기
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.526'
+
+    // 로깅 용
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 }
 
 tasks.named('test') {
