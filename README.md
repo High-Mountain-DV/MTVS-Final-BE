@@ -1,8 +1,6 @@
 # 🪖높은 산 깊은 골🏔️ - MTVS-Final-BE 👩‍💻💻🚀  
 ⭐️[메타버스 아카데미] 최종 융합 프로젝트⭐️ - 🪖높은 산 깊은 골🏔️  
 
----
-
 ![image](https://github.com/user-attachments/assets/d42507e1-3fe4-44f3-9072-8ce56f44e728)  
 
 ---
@@ -14,7 +12,12 @@
 ---
 
 ## 🚀 기획 내용  
-‘높은 산 깊은 골’은 메타버스 환경에서 사용자의 VR 군사 훈련 데이터를 제공하는 서비스 플랫폼입니다.  
+‘높은 산 깊은 골’은 메타버스 환경에서 사용자의 VR 군사 훈련 환경을 제공하는 서비스 플랫폼입니다.  
+
+  - 기획 의도 : 다양한 임무와 작전 훈련 환경에서 제한 없는 훈련을 하여 전투 역량을 높입니다.
+![image](https://github.com/user-attachments/assets/6d4c51fa-8acd-4b53-8a74-cc122c327cc2)
+![image](https://github.com/user-attachments/assets/7d94240b-f5a3-4373-9a56-0ff1046b2e63)
+![image](https://github.com/user-attachments/assets/c60f3496-0a47-4261-b6d9-2bd594c4d4bb)
 
 ---
 
@@ -81,20 +84,21 @@
 ---
 
 ### 📢 개발 환경  
-- **Language**: Java 17  
-- **Framework**: Spring Boot  
-- **Database**: PostgreSQL  
-- **ORM**: JPA  
-- **API 문서화**: Swagger  
-- **Cloud**: AWS S3  
-- **Security**: Spring Security, JWT  
-- **Version Control**: GitHub  
-- **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)  
+- **Language**: Java 17 ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)
+- **Framework**: Spring Boot ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+- **Database**: PostgreSQL ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+- **ORM**: JPA ![Hibernate](https://img.shields.io/badge/JPA-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
+- **API 문서화**: Swagger ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+- **Cloud**: AWS S3 ![AWS S3](https://img.shields.io/badge/Amazon%20S3-FF9900?style=for-the-badge&logo=amazons3&logoColor=white)
+- **Security**: Spring Security, JWT ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+- **Version Control**: GitHub ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+- **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana) ![ELK Stack](https://img.shields.io/badge/ELK%20Stack-005571?style=for-the-badge&logo=elasticstack&logoColor=white)
 
 ---
 
 ### 🎯 프로젝트 성과  
-- AI 분석 피드백 및 훈련 리포트 & 누적 리포트 -> S3 데이터 서빙을 통해 VR 환경에서 훈련 성과를 시각적으로 제공.  
+- AI 분석 피드백 및 훈련 리포트 & 누적 리포트 -> S3 데이터 서빙을 통해 VR 환경에서 훈련 성과를 시각적으로 제공.
+  ![image](https://github.com/user-attachments/assets/204abc06-337d-46ed-82e6-1b47f1c07478)
 - Spring Security와 JWT를 활용한 보안 강화로 안정성 높은 서비스 구현.  
 - AWS S3와 ELK Stack을 통해 대량 데이터 저장 및 로깅 효율성 극대화.  
 
