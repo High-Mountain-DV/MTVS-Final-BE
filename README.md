@@ -1,19 +1,27 @@
-# 🪖높은 산 깊은 골🏔️ - MTVS-Final-BE 👩‍💻💻🚀
-⭐️[메타버스 아카데미] 최종 융합 프로젝트⭐️ - 🪖높은 산 깊은 골🏔️ <br><br>
+# 🪖높은 산 깊은 골🏔️ - MTVS-Final-BE 👩‍💻💻🚀  
+⭐️[메타버스 아카데미] 최종 융합 프로젝트⭐️ - 🪖높은 산 깊은 골🏔️  
 
-![image](https://github.com/user-attachments/assets/d42507e1-3fe4-44f3-9072-8ce56f44e728)
+---
 
+![image](https://github.com/user-attachments/assets/d42507e1-3fe4-44f3-9072-8ce56f44e728)  
 
-## 💫 프로젝트 소개 ##
-"군사 환경 제공 플랫폼 <p>
-이 프로젝트는 메타버스 아카데미의 XR-언리얼, 백엔드(back-end), AI, TA, 기획 팀이 협업하여 진행한 프로젝트입니다. <br>
+---
 
+## 💫 프로젝트 소개  
+"군사 환경 제공 플랫폼"  
+이 프로젝트는 메타버스 아카데미의 **XR-언리얼**, **백엔드(back-end)**, **AI**, **TA**, **기획** 팀이 협업하여 진행한 프로젝트입니다.  
 
-## 🚀 기획 내용 ##
-‘높은 산 깊은 골’은 메타버스 환경에서 사용자의 VR 군사 훈련 환경을 제공하는 서비스 플랫폼입니다. <p><br>
+---
 
-## 🕰️ 개발 기간 
-* 24.10.08 - 24.11.29
+## 🚀 기획 내용  
+‘높은 산 깊은 골’은 메타버스 환경에서 사용자의 VR 군사 훈련 데이터를 제공하는 서비스 플랫폼입니다.  
+
+---
+
+## 🕰️ 개발 기간  
+* **24.10.08 - 24.11.29**
+
+---
 
 ### 🐣 백엔드 멤버 구성 [Backend Developer]  
 |                                               BE 김혜진                                              |                                                              
@@ -21,9 +29,9 @@
 | <img src = "https://avatars.githubusercontent.com/u/173024446?v=4" width = "100" height = "100"> | 
 |                            [@dev-hjk](https://github.com/dev-hjk)                               |
 
-<p><br>
+---
 
-### 🏆 백엔드 구현 내용 <br>
+### 🏆 백엔드 구현 내용  
 1. **API 설계 및 구현**
    - **회원 관리**
      - **로그인 API**:
@@ -65,41 +73,38 @@
      - **백엔드 → S3 → VR**의 데이터 흐름 테스트.
      - AI 분석 결과를 XR 환경으로 전달하는 최종 테스트 완료.
 
-<p><br>
+---
 
-### 🌠 아키텍쳐 설계 [System Architecture]
-  ![image](https://github.com/user-attachments/assets/8aea84fd-fa86-4c53-87ce-f05d8eb979a8)
+### 🌠 아키텍쳐 설계 [System Architecture]  
+![image](https://github.com/user-attachments/assets/8aea84fd-fa86-4c53-87ce-f05d8eb979a8)  
 
-<p><br>
+---
 
-### 📢 개발 환경
-- **Language**: Java 17
-- **Framework**: Spring Boot
-- **Database**: PostgreSQL
-- **ORM**: JPA
-- **API 문서화**: Swagger
-- **Cloud**: AWS S3
-- **Security**: Spring Security, JWT
-- **Version Control**: GitHub
-- **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)
+### 📢 개발 환경  
+- **Language**: Java 17  
+- **Framework**: Spring Boot  
+- **Database**: PostgreSQL  
+- **ORM**: JPA  
+- **API 문서화**: Swagger  
+- **Cloud**: AWS S3  
+- **Security**: Spring Security, JWT  
+- **Version Control**: GitHub  
+- **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)  
 
-<p><br>
+---
 
-### 🎯 프로젝트 성과
-- AI 분석 피드백 및 훈련 리포트 & 누적 리포트 -> S3 데이터 서빙을 통해 VR 환경에서 훈련 성과를 시각적으로 제공.
-- Spring Security와 JWT를 활용한 보안 강화로 안정성 높은 서비스 구현.
-- AWS S3와 ELK Stack을 통해 대량 데이터 저장 및 로깅 효율성 극대화.
+### 🎯 프로젝트 성과  
+- AI 분석 피드백 및 훈련 리포트 & 누적 리포트 -> S3 데이터 서빙을 통해 VR 환경에서 훈련 성과를 시각적으로 제공.  
+- Spring Security와 JWT를 활용한 보안 강화로 안정성 높은 서비스 구현.  
+- AWS S3와 ELK Stack을 통해 대량 데이터 저장 및 로깅 효율성 극대화.  
 
-<p><br>
+---
+
+## :busts_in_silhouette: Team Members '🏔️ 높은 산 깊은 골 전체 멤버 구성 🪖'  
+
+|                          BE 김혜진                           |                          XR 전승건                           |                          XR 최선우                           |                          XR 한수빈                           |                          TA 서현녕                           |                          AI 박진우                           |                          기획 김창선                           |
+|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
+| <img src = "https://avatars.githubusercontent.com/u/173024446?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/112955666?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/101624921?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/80036437?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/173872482?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/176445886?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/129839798?v=4" width = "100" height = "100"> |
+|       [@dev-hjk](https://github.com/dev-hjk)                |       [@JSG0626](https://github.com/JSG0626)                |       [@sunwchoi](https://github.com/sunwchoi)              |       [@so0oppy](https://github.com/so0oppy)                |       [@HyunneongSeo](https://github.com/HyunneongSeo)      |       [@silvercrown0730](https://github.com/silvercrown0730)|       [@joy98joy](https://github.com/joy98joy)              |
+
    
-## :busts_in_silhouette: Team Members '🏔️높은 산 깊은 골 팀 멤버 구성🪖' ##
-
-|                          BE 김혜진                           |                           XR 전승건                           |                          XR 최선우                           |                          XR 한수빈                           |
-|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
-| <img src = "https://avatars.githubusercontent.com/u/173024446?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/112955666?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/101624921?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/80036437?v=4" width = "100" height = "100"> |
-|       [@dev-hjk](https://github.com/dev-hjk)                |       [@JSG0626](https://github.com/JSG0626)              |       [@sunwchoi](https://github.com/sunwchoi)              |       [@so0oppy](https://github.com/so0oppy)              |
-
-|                          TA 서현녕                           |                          AI 박진우                           |                          기획 김창선                           |
-|:-----------------------------------------------------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
-| <img src = "https://avatars.githubusercontent.com/u/173872482?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/176445886?v=4" width = "100" height = "100"> | <img src = "https://avatars.githubusercontent.com/u/129839798?v=4" width = "100" height = "100"> |
-|       [@HyunneongSeo](https://github.com/HyunneongSeo)              |       [@silvercrown0730](https://github.com/silvercrown0730)              |       [@joy98joy](https://github.com/joy98joy)              |
