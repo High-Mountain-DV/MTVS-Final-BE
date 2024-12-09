@@ -116,3 +116,7 @@
 |       [@dev-hjk](https://github.com/dev-hjk)                |       [@JSG0626](https://github.com/JSG0626)                |       [@sunwchoi](https://github.com/sunwchoi)              |       [@so0oppy](https://github.com/so0oppy)                |       [@HyunneongSeo](https://github.com/HyunneongSeo)      |       [@silvercrown0730](https://github.com/silvercrown0730)|       [@joy98joy](https://github.com/joy98joy)              |
 
    
+---
+
+### 🪖 높은 산 깊은 골 포스터
+![image](https://github.com/user-attachments/assets/4bcf71a5-ae4e-492f-9350-bf485e295159)
