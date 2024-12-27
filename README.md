@@ -1,7 +1,8 @@
 # 🪖높은 산 깊은 골🏔️ - MTVS-Final-BE 👩‍💻💻🚀 
 
 ⭐️[메타버스 아카데미] 최종 융합 프로젝트⭐️ - 🪖높은 산 깊은 골🏔️ 
-프로젝트 영상 : https://youtu.be/4KAOiESOCtQ?feature=shared 
+
+📷 프로젝트 영상 : https://youtu.be/4KAOiESOCtQ?feature=shared 
 
 ![image](https://github.com/user-attachments/assets/d42507e1-3fe4-44f3-9072-8ce56f44e728)  
 
